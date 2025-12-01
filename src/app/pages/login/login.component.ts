@@ -41,8 +41,7 @@ export class LoginComponent implements OnInit {
 
       this.authService.login(loginPayload.email, loginPayload.password).subscribe({
         next: (response: AuthResponse) => {
-          // Guardar token en localStorage
-          localStorage.setItem('token', response.access_token);
+          // El token ya se guarda automáticamente en AuthService
           this.isLoading = false;
           // Redirigir a usuarios
           this.router.navigate(['/usuarios']);
