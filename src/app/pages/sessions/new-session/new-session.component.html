@@ -1,0 +1,242 @@
+<!-- Modal Overlay -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-900">Crear Nueva Sesión</h2>
+      <button
+        (click)="onCancel()"
+        class="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+      >
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form Content -->
+    <div class="p-6">
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+          <svg class="w-5 h-5 text-red-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
+          <p class="text-sm text-red-700">{{ error }}</p>
+        </div>
+      </div>
+
+      <!-- Session Preview -->
+      <div *ngIf="showPreview" class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 class="text-lg font-semibold text-blue-900 mb-3">Resumen de la Sesión</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="font-medium text-blue-800">Paciente:</span>
+            <span class="text-blue-700">{{ getPatientName(f['patientId'].value) }}</span>
+          </div>
+          <div>
+            <span class="font-medium text-blue-800">Fecha:</span>
+            <span class="text-blue-700">{{ formatDate(f['fecha'].value) }}</span>
+          </div>
+          <div>
+            <span class="font-medium text-blue-800">Horario:</span>
+            <span class="text-blue-700">{{ f['horaInicio'].value }} - {{ f['horaFin'].value }}</span>
+          </div>
+          <div>
+            <span class="font-medium text-blue-800">Tipo de sesión:</span>
+            <span class="text-blue-700">{{ getEmotionLabel(f['tipoSesion'].value) }}</span>
+          </div>
+          <div>
+            <span class="font-medium text-blue-800">Precio:</span>
+            <span class="text-blue-700">{{ formatPrice(f['monto'].value) }}</span>
+          </div>
+          <div>
+            <span class="font-medium text-blue-800">Estado:</span>
+            <span class="text-blue-700">{{ f['pagado'].value ? 'Pagado' : 'Pendiente' }}</span>
+          </div>
+        </div>
+        <div *ngIf="f['notas'].value" class="mt-3">
+          <span class="font-medium text-blue-800">Notas:</span>
+          <p class="text-blue-700 mt-1">{{ f['notas'].value }}</p>
+        </div>
+        <div class="mt-4 flex space-x-3">
+          <button
+            (click)="hidePreview()"
+            class="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors"
+          >
+            Editar
+          </button>
+          <button
+            (click)="onSubmit()"
+            [disabled]="loading"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          >
+            <svg *ngIf="loading" class="w-4 h-4 mr-2 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            {{ loading ? 'Guardando...' : 'Confirmar y Guardar' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form *ngIf="!showPreview" [formGroup]="sessionForm" (ngSubmit)="showSessionPreview()" class="space-y-6">
+        
+        <!-- Patient Selection -->
+        <div>
+          <label for="patientId" class="block text-sm font-medium text-gray-700 mb-2">Paciente *</label>
+          <select
+            id="patientId"
+            formControlName="patientId"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+            [class.border-red-500]="f['patientId'].invalid && f['patientId'].touched"
+          >
+            <option value="">Selecciona un paciente</option>
+            <option *ngFor="let patient of patients" [value]="patient.id">
+              {{ patient.fullName }} ({{ patient.age }} años, {{ patient.gender }})
+            </option>
+          </select>
+          <div *ngIf="f['patientId'].invalid && f['patientId'].touched" class="mt-1 text-sm text-red-600">
+            Debes seleccionar un paciente
+          </div>
+        </div>
+        
+        <!-- Date and Time Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Fecha *</label>
+            <input
+              id="fecha"
+              type="date"
+              formControlName="fecha"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              [class.border-red-500]="f['fecha'].invalid && f['fecha'].touched"
+            >
+            <div *ngIf="f['fecha'].invalid && f['fecha'].touched" class="mt-1 text-sm text-red-600">
+              La fecha es obligatoria
+            </div>
+          </div>
+
+          <div>
+            <label for="horaInicio" class="block text-sm font-medium text-gray-700 mb-2">Hora de inicio *</label>
+            <input
+              id="horaInicio"
+              type="time"
+              formControlName="horaInicio"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              [class.border-red-500]="f['horaInicio'].invalid && f['horaInicio'].touched"
+            >
+            <div *ngIf="f['horaInicio'].invalid && f['horaInicio'].touched" class="mt-1 text-sm text-red-600">
+              La hora de inicio es obligatoria
+            </div>
+          </div>
+
+          <div>
+            <label for="horaFin" class="block text-sm font-medium text-gray-700 mb-2">Hora de término *</label>
+            <input
+              id="horaFin"
+              type="time"
+              formControlName="horaFin"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              [class.border-red-500]="f['horaFin'].invalid && f['horaFin'].touched"
+            >
+            <div *ngIf="f['horaFin'].invalid && f['horaFin'].touched" class="mt-1 text-sm text-red-600">
+              La hora de término es obligatoria
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Validation Error -->
+        <div *ngIf="getTimeError()" class="bg-red-50 border border-red-200 rounded-lg p-3">
+          <p class="text-sm text-red-700">{{ getTimeError() }}</p>
+        </div>
+
+        <!-- Emotion and Price Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="tipoSesion" class="block text-sm font-medium text-gray-700 mb-2">Tipo de sesión *</label>
+            <select
+              id="tipoSesion"
+              formControlName="tipoSesion"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              [class.border-red-500]="f['tipoSesion'].invalid && f['tipoSesion'].touched"
+            >
+              <option value="">Selecciona el tipo</option>
+              <option *ngFor="let type of sessionTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+            <div *ngIf="f['tipoSesion'].invalid && f['tipoSesion'].touched" class="mt-1 text-sm text-red-600">
+              Debes seleccionar el tipo de sesión
+            </div>
+          </div>
+
+          <div>
+            <label for="monto" class="block text-sm font-medium text-gray-700 mb-2">Monto (CLP) *</label>
+            <input
+              id="monto"
+              type="number"
+              formControlName="monto"
+              min="1"
+              step="100"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              [class.border-red-500]="f['monto'].invalid && f['monto'].touched"
+              placeholder="50000"
+            >
+            <div *ngIf="f['monto'].invalid && f['monto'].touched" class="mt-1 text-sm text-red-600">
+              <span *ngIf="f['monto'].errors?.['required']">El monto es obligatorio</span>
+              <span *ngIf="f['monto'].errors?.['min']">El monto debe ser mayor a 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label for="notas" class="block text-sm font-medium text-gray-700 mb-2">Notas del terapeuta</label>
+          <textarea
+            id="notas"
+            formControlName="notas"
+            rows="4"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+            placeholder="Resumen de la sesión, observaciones, progreso del paciente..."
+          ></textarea>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="flex items-center">
+          <input
+            id="pagado"
+            type="checkbox"
+            formControlName="pagado"
+            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+          >
+          <label for="pagado" class="ml-2 text-sm font-medium text-gray-700">
+            La sesión ya está pagada
+          </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="sessionForm.invalid || loading"
+            class="px-6 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <svg *ngIf="loading" class="w-4 h-4 mr-2 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            {{ loading ? 'Guardando...' : 'Guardar Sesión' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

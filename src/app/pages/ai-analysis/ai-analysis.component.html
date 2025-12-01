@@ -1,0 +1,138 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 py-8 px-4">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Análisis Emocional con IA</h2>
+      <p class="text-gray-600">Descubre las emociones detrás de tus pensamientos</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="analyze()" class="space-y-6">
+      <div>
+        <label for="text" class="block text-sm font-medium text-gray-700 mb-3">
+          Escribe tus pensamientos
+        </label>
+        <textarea 
+          id="text" 
+          formControlName="text" 
+          rows="6" 
+          placeholder="Escribe aquí tus pensamientos, sentimientos o experiencias..."
+          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all duration-200 text-gray-900 placeholder-gray-400"
+        ></textarea>
+        
+        <!-- Validation errors -->
+        <div *ngIf="text?.invalid && (text?.dirty || text?.touched)" class="mt-2 space-y-1">
+          <div *ngIf="text?.errors?.['required']" class="text-sm text-red-600 flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            El texto es obligatorio
+          </div>
+          <div *ngIf="text?.errors?.['minlength']" class="text-sm text-red-600 flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            Mínimo 10 caracteres requeridos
+          </div>
+          <div *ngIf="text?.errors?.['maxlength']" class="text-sm text-red-600 flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            Máximo 2000 caracteres permitidos
+          </div>
+        </div>
+      </div>
+
+      <!-- Analyze Button -->
+      <div class="flex justify-center">
+        <button 
+          type="submit" 
+          [disabled]="form.invalid || loading"
+          class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          <svg *ngIf="loading" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <svg *ngIf="!loading" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+          </svg>
+          {{ loading ? 'Analizando...' : 'Analizar' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="text-center py-12">
+      <div class="inline-flex flex-col items-center space-y-4">
+        <div class="relative">
+          <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <div class="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-purple-600 rounded-full animate-spin" style="animation-delay: -0.5s;"></div>
+        </div>
+        <p class="text-lg font-medium text-gray-600">Analizando tu texto con IA...</p>
+        <p class="text-sm text-gray-500">Esto puede tomar unos segundos</p>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-xl p-4 animate-fade-in">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-red-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+          <h3 class="text-sm font-medium text-red-800">Error en el análisis</h3>
+          <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div *ngIf="result" class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-blue-100 p-6 animate-fade-in">
+      <div class="space-y-6">
+        <!-- Emotion Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <span class="text-4xl">{{ getEmotionTag(result.primaryEmotion).emoji }}</span>
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">{{ getEmotionTag(result.primaryEmotion).label }}</h3>
+              <p class="text-sm text-gray-600">Emoción detectada</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-2xl font-bold text-indigo-600">{{ (result.confidence * 100) | number:'1.0-1' }}%</div>
+            <div class="text-sm text-gray-500">Confianza</div>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 rounded-full text-sm font-semibold {{ getEmotionTag(result.primaryEmotion).color }}">
+            {{ getEmotionTag(result.primaryEmotion).label }}
+          </span>
+          <span class="px-3 py-1 rounded-full text-sm font-medium {{ getIntensityTag(result.analysisData.intensity).color }}">
+            Intensidad: {{ getIntensityTag(result.analysisData.intensity).label }}
+          </span>
+          <span class="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700">
+            Modelo: {{ result.analysisData.model }}
+          </span>
+        </div>
+
+        <!-- Reasoning -->
+        <div class="bg-white rounded-xl p-4 border border-blue-100">
+          <h4 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+            </svg>
+            Análisis Detallado
+          </h4>
+          <p class="text-gray-700 leading-relaxed">{{ result.analysisData.reasoning }}</p>
+        </div>
+
+        <!-- Timestamp -->
+        <div class="text-xs text-gray-400 text-center">
+          Análisis realizado el {{ result.analysisData.timestamp | date:'medium' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,92 @@
+<!-- Modal Overlay -->
+<div class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-fadeIn">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-900">
+        Transcripción de la Sesión
+      </h3>
+      <div class="flex items-center space-x-3">
+        <!-- Delete Button -->
+        <button
+          *ngIf="transcription"
+          (click)="onDeleteTranscription()"
+          class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+          Eliminar
+        </button>
+        
+        <!-- Close Button -->
+        <button
+          (click)="onClose()"
+          class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="flex justify-center items-center py-12">
+        <div class="inline-flex flex-col items-center space-y-4">
+          <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p class="text-gray-600">Cargando transcripción...</p>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No se encontró transcripción</h3>
+        <p class="text-gray-500">{{ error }}</p>
+      </div>
+
+      <!-- Transcription Content -->
+      <div *ngIf="transcription && !loading" class="space-y-6">
+        <!-- Metadata -->
+        <div class="bg-gray-50 rounded-xl p-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="font-medium text-gray-700">Creada:</span>
+              <span class="text-gray-600 ml-2">{{ formatDate(transcription.createdAt) }}</span>
+            </div>
+            <div>
+              <span class="font-medium text-gray-700">Actualizada:</span>
+              <span class="text-gray-600 ml-2">{{ formatDate(transcription.updatedAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Contenido de la Transcripción</h3>
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <div class="prose prose-indigo max-w-none">
+              <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ transcription.content }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end pt-6 border-t border-gray-200">
+          <button
+            (click)="onClose()"
+            class="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

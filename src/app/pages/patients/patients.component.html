@@ -1,0 +1,282 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <div class="mb-8 animate-fadeIn">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Pacientes</h1>
+          <p class="text-gray-600 mt-2">Gestiona todos los pacientes registrados</p>
+        </div>
+        <button
+          (click)="openAddPatientModal()"
+          class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Agregar Paciente
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12 animate-fadeIn">
+      <div class="inline-flex flex-col items-center space-y-4">
+        <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="text-gray-600">Cargando pacientes...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 animate-fadeIn">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-red-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+          <h3 class="text-sm font-medium text-red-800">Error</h3>
+          <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patients Table -->
+    <div *ngIf="!loading && !error" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate-slideIn">
+      <div *ngIf="patients.length === 0" class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No hay pacientes</h3>
+        <p class="mt-1 text-sm text-gray-500">No hay pacientes registrados aún.</p>
+        <div class="mt-6">
+          <button
+            (click)="openAddPatientModal()"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Agregar primer paciente
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="patients.length > 0" class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Nombre
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Edad
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Género
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Contacto
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr 
+              *ngFor="let patient of patients; trackBy: trackByPatientId" 
+              class="hover:bg-gray-50 transition-all duration-200 animate-fadeIn"
+              [style.animation-delay]="(patients.indexOf(patient) * 0.1) + 's'"
+            >
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm">{{ patient.fullName.charAt(0).toUpperCase() }}</span>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">{{ patient.fullName }}</div>
+                    <div class="text-sm text-gray-500">ID: {{ patient.id }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ patient.age }} años</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2" [class]="getGenderColor(patient.gender)" fill="currentColor" viewBox="0 0 20 20">
+                    <path *ngIf="getGenderIcon(patient.gender) === 'mars'" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
+                    <path *ngIf="getGenderIcon(patient.gender) === 'venus'" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"></path>
+                    <path *ngIf="getGenderIcon(patient.gender) === 'genderless'" fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span class="text-sm" [class]="getGenderColor(patient.gender)">
+                    {{ getGenderLabel(patient.gender) }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900" *ngIf="patient.contactInfo; else noContact">
+                  {{ patient.contactInfo }}
+                </div>
+                <ng-template #noContact>
+                  <span class="text-sm text-gray-500">No especificado</span>
+                </ng-template>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <button
+                  (click)="viewPatientDetails(patient.id)"
+                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-colors duration-200"
+                >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  Ver detalles
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Patient Modal -->
+  <div *ngIf="showAddPatientModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Agregar Nuevo Paciente</h3>
+        <div *ngIf="success" class="mb-4 bg-green-50 border border-green-200 rounded-lg p-3 animate-fadeIn">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <p class="text-sm text-green-700">{{ success }}</p>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="mb-4 bg-red-50 border border-red-200 rounded-lg p-3 animate-fadeIn">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+            <p class="text-sm text-red-700">{{ error }}</p>
+          </div>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #patientForm="ngForm">
+          <div class="mb-4">
+            <label for="fullName" class="block text-sm font-medium text-gray-700">Nombre Completo *</label>
+            <input 
+              type="text" 
+              id="fullName" 
+              name="fullName"
+              [(ngModel)]="newPatient.fullName"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+              placeholder="Ingresa el nombre completo"
+            >
+          </div>
+          
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email *</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              [(ngModel)]="newPatient.email"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+              placeholder="ejemplo@email.com"
+            >
+          </div>
+          
+          <div class="mb-4">
+            <label for="age" class="block text-sm font-medium text-gray-700">Edad *</label>
+            <input 
+              type="number" 
+              id="age" 
+              name="age"
+              [(ngModel)]="newPatient.age"
+              required
+              min="0"
+              max="150"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+              placeholder="25"
+            >
+          </div>
+          
+          <div class="mb-4">
+            <label for="gender" class="block text-sm font-medium text-gray-700">Género *</label>
+            <select 
+              id="gender" 
+              name="gender"
+              [(ngModel)]="newPatient.gender"
+              required
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+            >
+              <option value="">Seleccionar género</option>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          
+          <div class="mb-4">
+            <label for="contactInfo" class="block text-sm font-medium text-gray-700">Información de Contacto</label>
+            <input 
+              type="text" 
+              id="contactInfo" 
+              name="contactInfo"
+              [(ngModel)]="newPatient.contactInfo"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+              placeholder="Teléfono, dirección, etc."
+            >
+          </div>
+          
+          <div class="mb-4">
+            <label for="notes" class="block text-sm font-medium text-gray-700">Observaciones</label>
+            <textarea 
+              id="notes" 
+              name="notes"
+              [(ngModel)]="newPatient.notes"
+              rows="3"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 resize-none"
+              placeholder="Notas adicionales sobre el paciente..."
+            ></textarea>
+          </div>
+          
+          <div class="flex justify-end space-x-3">
+            <button 
+              type="button"
+              (click)="closeAddPatientModal()"
+              [disabled]="submitting"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit"
+              [disabled]="submitting || !patientForm.form.valid"
+              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              <svg *ngIf="submitting" class="w-4 h-4 mr-2 animate-spin inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              {{ submitting ? 'Creando...' : 'Agregar Paciente' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient Detail Modal -->
+  <app-patient-detail
+    *ngIf="showPatientDetailModal"
+    [patient]="selectedPatient"
+    (closeModal)="closePatientDetailModal()"
+  ></app-patient-detail>
+</div> 

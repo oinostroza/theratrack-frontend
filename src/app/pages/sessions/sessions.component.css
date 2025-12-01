@@ -1,0 +1,571 @@
+/* Custom styles for sessions page */
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Modal animations */
+.modal-backdrop {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Success notification animation */
+.success-notification {
+  animation: slideInRight 0.3s ease-in-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Button hover effects */
+.btn-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-cancel:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
+}
+
+/* Modal specific styles */
+.delete-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.delete-modal .modal-content {
+  min-height: auto;
+  max-height: calc(90vh - 2rem);
+}
+
+/* Ensure buttons are fully visible */
+.delete-modal button {
+  min-width: 100px;
+  white-space: nowrap;
+}
+
+/* Responsive modal */
+@media (max-width: 640px) {
+  .delete-modal .modal-content {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+  
+  .delete-modal .footer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .delete-modal .footer button {
+    width: 100%;
+  }
+}
+
+/* Animaciones para el dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-fadeOut {
+  animation: fadeOut 0.2s ease-in forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.2s ease-out forwards;
+}
+
+/* Estilos para el dropdown */
+.dropdown-menu {
+  transform-origin: top right;
+  transition: all 0.2s ease-out;
+}
+
+/* Mejoras en los botones del dropdown */
+.dropdown-option {
+  transition: all 0.15s ease-out;
+}
+
+.dropdown-option:hover {
+  transform: translateX(2px);
+}
+
+/* Estilos para el botón de tres puntos */
+.three-dots-button {
+  transition: all 0.2s ease-out;
+}
+
+.three-dots-button:hover {
+  transform: scale(1.05);
+}
+
+.three-dots-button:active {
+  transform: scale(0.95);
+}
+
+/* Estilos específicos para el dropdown button */
+.dropdown-button {
+  position: relative;
+  z-index: 10;
+}
+
+/* Asegurar que el dropdown esté por encima de otros elementos */
+.dropdown-button + div {
+  z-index: 9999 !important;
+}
+
+/* Mejoras en las notificaciones */
+.notification-enter {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Mejoras en los modales */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease-out;
+}
+
+.modal-content {
+  transition: all 0.3s ease-out;
+}
+
+.modal-enter {
+  animation: modalEnter 0.3s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Estilos para el estado de carga */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mejoras en la tabla */
+.table-row {
+  transition: all 0.2s ease-out;
+}
+
+.table-row:hover {
+  background-color: rgba(99, 102, 241, 0.02);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Estilos para los badges de estado */
+.status-badge {
+  transition: all 0.2s ease-out;
+}
+
+.status-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejoras en los botones de acción */
+.action-button {
+  transition: all 0.2s ease-out;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+/* Asegurar que el contenedor de la tabla permita overflow visible para el dropdown */
+.overflow-x-auto.overflow-y-visible {
+  overflow-y: visible !important;
+}
+
+/* Estilos para el dropdown cuando se despliega hacia arriba */
+.dropdown-menu-above {
+  transform-origin: bottom right;
+}
+
+/* Asegurar que el dropdown no se corte */
+.relative {
+  overflow: visible !important;
+}
+
+/* Mejoras en la transición del dropdown */
+.dropdown-menu {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Estilos adicionales para el dropdown dinámico */
+.dropdown-menu-dynamic {
+  position: absolute;
+  z-index: 9999;
+  min-width: 14rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Asegurar que el contenedor de la tabla permita overflow visible */
+.table-container {
+  overflow: visible !important;
+}
+
+/* Estilos para el dropdown cuando se despliega hacia arriba */
+.dropdown-above {
+  transform-origin: bottom right;
+}
+
+/* Estilos para el dropdown cuando se despliega hacia abajo */
+.dropdown-below {
+  transform-origin: top right;
+}
+
+/* Mejoras en la accesibilidad del dropdown */
+.dropdown-button:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Asegurar que los elementos del dropdown sean accesibles */
+.dropdown-menu button:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: -2px;
+}
+
+/* Estilos para el estado activo del dropdown */
+.dropdown-menu button:active {
+  transform: scale(0.98);
+}
+
+/* Mejoras en la responsividad del dropdown */
+@media (max-width: 640px) {
+  .dropdown-menu-dynamic {
+    min-width: 12rem;
+    right: -0.5rem;
+  }
+  
+  .dropdown-menu-dynamic.dropdown-above {
+    bottom: calc(100% + 0.5rem);
+  }
+  
+  .dropdown-menu-dynamic.dropdown-below {
+    top: calc(100% + 0.5rem);
+  }
+}
+
+/* Estilos para el modal de acciones */
+.actions-modal {
+  backdrop-filter: blur(4px);
+}
+
+.actions-modal .modal-content {
+  animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Estilos para los botones de acción */
+.action-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+/* Estilos específicos para cada tipo de acción */
+.action-button.view-patient:hover {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.action-button.view-transcription:hover {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.action-button.add-transcription:hover {
+  border-color: #8b5cf6;
+  background-color: #f5f3ff;
+}
+
+.action-button.delete-session:hover {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+/* Mejoras en la accesibilidad */
+.action-button:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Estilos para el botón "Ver Acciones" */
+.ver-acciones-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  border: 1px solid #d1d5db;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.ver-acciones-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.ver-acciones-button:hover::before {
+  left: 100%;
+}
+
+.ver-acciones-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #9ca3af;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+.ver-acciones-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ver-acciones-button:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Estilos para botones deshabilitados */
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.action-button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+}
+
+/* Estilos específicos para estados de transcripción */
+.transcription-available {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.transcription-available:hover {
+  border-color: #059669;
+  background-color: #d1fae5;
+}
+
+.transcription-unavailable {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+.transcription-unavailable:hover {
+  border-color: #d97706;
+  background-color: #fef3c7;
+}
+
+/* Mejoras en la responsividad del modal */
+@media (max-width: 640px) {
+  .actions-modal .modal-content {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+  
+  .action-button {
+    padding: 0.75rem;
+  }
+  
+  .action-button .w-10 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .action-button .w-5 {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .ver-acciones-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Prevenir scroll del body cuando el modal está abierto */
+body.modal-open {
+  overflow: hidden;
+} 
